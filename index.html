@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<title>Fabric Brushes Demo</title>
+<script src="./dist/fabric.js"></script>
+<script src="./dist/croquis.js"></script>
+<script src="./dat.gui.min.js"></script>
+<script src="./highlight.min.js"></script>
+<script src="./eraser_brush.mixin.js"></script>
+<script src="./jquery.min.js"></script>
+<!-- <script src='https://unpkg.com/fabric@latest/src/mixins/eraser_brush.mixin.js'></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.4.0/fabric.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script> -->
+
+<script>
+	window.addEventListener('load', () => {
+		// Highlight code samples:
+		hljs.configure({
+			tabReplace: '   ', // 3 spaces
+		});
+
+		const els = document.querySelectorAll('pre code');
+		els.forEach((el) => {
+			hljs.highlightBlock(el);
+		})
+	});
+</script>
+<!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/github.min.css"> -->
+<link rel="stylesheet" type="text/css" href="./github.min.css">
+<link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+
+<!------------------------------------- Panel ------------------------------------->
+<h2>Brush</h2>
+<div class="canvas-wrap">
+	<canvas id="canvas"></canvas>
+</div>
+<div style="display: none;">
+	<img src="./img/QueensBrush.png" style="visibility: hidden;"/>
+	<img src="./img/RoundDopeMarker.png" style="visibility: hidden;"/>
+	<img src="./img/pandani.png" style="visibility: hidden;"/>
+	<img src="./img/Ink17SparklingBlade2.png" style="visibility: hidden;"/>
+	<img src="./img/RoughMarker.png" style="visibility: hidden;"/>
+	<img src="./img/Ink39DryingBright.png" style="visibility: hidden;"/>
+	<img src="./img/Ink54WideAngleRish.png" style="visibility: hidden;"/>
+	<img src="./img/HandstylerOne.png" style="visibility: hidden;"/>
+	<img src="./img/FlamingMarker.png" style="visibility: hidden;"/>
+	<img src="./img/Grassy.png" style="visibility: hidden;"/>
+	<img src="./img/FatNozzle.png" style="visibility: hidden;"/>
+	<img src="./img/Tulle.png" style="visibility: hidden;"/>
+	<img src="./img/WetAcrylic.png" style="visibility: hidden;"/>
+	<img src="./img/SauceBrush.png" style="visibility: hidden;"/>
+	<img src="./img/swordgrass.png" style="visibility: hidden;"/>
+	<img src="./img/FellasBrush.png" style="visibility: hidden;"/>
+	<img src="./img/Nebula.png" style="visibility: hidden;"/>
+</div>
+<script type="module">
+
+import {DatGui, getFabricCanvas} from './dist/initialize.js'
+
+(canvasID => {
+	const brushOpts = {
+		color: '#009a6c',
+		width: 75,
+		opacity: 0.7
+	},
+	fabricCanvas = getFabricCanvas(canvasID, 'FatNozzle', brushOpts),
+	dat = DatGui(brushOpts, fabricCanvas),
+	gui = dat.getGui();
+
+	gui.add(gui, 'brushWidth', 5, 1000).step(5)
+	.onChange(value => {
+		fabricCanvas.freeDrawingBrush.width = value;
+	});
+
+	gui.addColor(gui, 'brushColor')
+	.onChange(value => {
+		fabricCanvas.freeDrawingBrush.color = value;
+		console.log(value);
+	});
+
+	gui.add(gui, 'brushOpacity', 0.1, 1).step(0.1)
+	.onChange(value => {
+		fabricCanvas.freeDrawingBrush.opacity = value;
+	});
+
+	dat.addButtons();
+
+	fabricCanvas.getElement().parentNode.parentNode.appendChild(gui.domElement);
+	fabricCanvas.contextTop.globalAlpha = brushOpts.opacity;
+})('canvas');
+
+$(document).ready(function () {
+	$('.canvas-wrap').hide();
+
+	var imgs = document.images,
+    len = imgs.length,
+    counter = 0;
+
+	[].forEach.call( imgs, function( img ) {
+		if(img.complete)
+		incrementCounter();
+		else
+		img.addEventListener( 'load', incrementCounter, false );
+	} );
+
+	function incrementCounter() {
+		counter++;
+		if ( counter === len ) {
+			console.log( 'All images loaded!' );
+			$('.canvas-wrap').show();
+		}
+	}
+});
+
+</script>
+</body>
+</html>
